@@ -59,6 +59,7 @@ using a slightly simpler version of this, as the `pad.value` is a json string li
 
 ## todos / ideas
 
+- [ ] paging results for faster loading time (eg show last 20 edited pads, then click to load more?)
 - [ ] add search function
 - [ ] add sort-by each key (title, timestamp, revisions number, authors number) (now it’s sorted by most recent edited pad)
 - [ ] grab author’s color hex value, and build a gradient out of them all?
