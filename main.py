@@ -14,14 +14,6 @@ from datetime import datetime
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
-# -- setup db connection
-connection = pymysql.connect(host=os.getenv('DB_HOST'),
-                             user=os.getenv('DB_USER'),
-                             password=os.getenv('DB_PASSWORD'),
-                             db=os.getenv('DB_NAME'),
-                             charset='utf8mb4',
-                             cursorclass=pymysql.cursors.DictCursor)
-
 
 class App(object):
     def __init__(self):
@@ -29,8 +21,8 @@ class App(object):
         self.jinja_env = Environment(loader=FileSystemLoader(template_path), autoescape=True)
 
         def datetime_format(timestamp):
-            # divide by /1000 to convert from milliseconds to seconds
             # <https://stackoverflow.com/a/31548402>
+            # divide by /1000 to convert from milliseconds to seconds
             ts = timestamp / 1000
 
             # <https://stackoverflow.com/a/37188257>
@@ -72,9 +64,20 @@ class App(object):
     # -- views
     def on_main(self, request, get_from_db=get_from_db):
         if request.method == 'GET':
+            # -- setup db connection
+            connection = pymysql.connect(host=os.getenv('DB_HOST'),
+                                         user=os.getenv('DB_USER'),
+                                         password=os.getenv('DB_PASSWORD'),
+                                         db=os.getenv('DB_NAME'),
+                                         charset='utf8mb4',
+                                         cursorclass=pymysql.cursors.DictCursor)
+
+            # get all pads and sort them by timestamp
             pads = get_from_db.get_data(connection)
-            ep_port = os.getenv('EP_PORT')
             pads = sorted(pads, key=itemgetter(1), reverse=True)
+
+            ep_port = os.getenv('EP_PORT')
+
             return self.render_template('index.html', pads=pads, ep_port=ep_port)
 
     def error_404(self):
