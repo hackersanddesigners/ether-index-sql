@@ -23,11 +23,14 @@ def get_data(connection):
 
             # -- set keys
             if ':revs:' not in pad['key']:
-                padk = pad['key']
-                pad_index[padk] = {'title': padk,
-                                   'timestamp': 0,
-                                   'revisions': 0,
-                                   'authors': 0}
+                try:
+                    padk = pad['key']
+                    pad_index[padk] = {'title': padk,
+                                       'timestamp': 0,
+                                       'revisions': 0,
+                                       'authors': 0}
+                except Exception as e:
+                    print('pad-revs err =>', pad, e)
 
                 for item in pad_v['pool']['numToAttrib'].values():
                     if item[0] == 'author':
