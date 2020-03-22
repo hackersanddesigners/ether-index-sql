@@ -1,15 +1,51 @@
 ether-index-sql
 ===============
 
-a python plugin for etherpad, that reads from the SQL database etherpad-lite is running from, and build up a one-page with a list of all the pads, plus some useful details for each.
+a python plugin for [etherpad-lite](https://github.com/ether/etherpad-lite/wiki/How-to-list-all-pads), that reads from the SQL database etherpad-lite is running from, and make a one-page index list of all the pads, plus some useful details for each.
 
-i began a `node-js` version that uses etherpad’s APIs to do the same. might finish it as a fully client-side app (the opposite of this one).
+## usage
 
-i just thought that having to first get a list of all the pads’ id, and then do another call to get the “useful details“ was a bit silly. but that’s what etherpad APIs provides.
+### clone the repo
 
-reading straight from the db could be faster (?) and just one call. also, no javascript involved at all.
+```
+$ git clone git@github.com:hackersanddesigners/ether-index-sql.git
+```
 
-next version will be in `C`, lol.
+### setup python virtual environment
+
+we’re using `pyenv` + `pipenv`. the upside is that `pipenv` works also as a package manager (better than `pip`), so we get a `Pipfile`.
+
+you can use `virtualenv`, etc. we’re running with `python 3.7.3` (see the file `.python-version`) 
+
+afterwards, install all the packages listed in the `Pipfile`.
+
+### create .env
+
+to store db credentials and etherpad’s url / port number, we use a `.env`.
+
+```
+# from the root project folder, eg /path/to/ether-index-sql/.
+
+$ touch .env
+```
+
+then add the following with appropriate values (change them with your own values!)
+
+```
+DB_HOST=localhost
+DB_USER=sql-username
+DB_PASSWORD=some-pa$$word
+DB_NAME=etherpad_lite_db
+EP_PORT=9001
+```
+
+### run the app
+
+```
+$ python main.py
+```
+
+this starts the server, default port is `localhost:5005`.
 
 ## how to get a list of all the pads
 
@@ -19,7 +55,7 @@ next version will be in `C`, lol.
 select distinct substring(store.key,5,locate(":",store.key,5)-5) as "pads" from store where store.key like "pad:%";
 ```
 
-using a slightly simpler version of this, as the `pad.value` is a json string like pad.key, but more complex. easier to work that out in python.
+using a slightly simpler version of this, as the `pad.value` is a json string like `pad.key`, but more complex. easier to work that out in python.
 
 ## todos / ideas
 
