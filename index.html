@@ -47,7 +47,7 @@
   <main>
     {% for pad in pads %}
     <div class="x xdr xw xjb pl1 pr1 pb1 lg-pb0">
-      <a href="http://localhost:{{ ep_port }}/p/{{ pad[0] }}" class="w100 md-w50 lg-w35 md-pr1">{{ pad[0] }}</a>
+      <a href="{{ ep_url }}/p/{{ pad[0] }}" class="w100 md-w50 lg-w35 md-pr1">{{ pad[0] }}</a>
       <code class="w100 md-w50 lg-w25 lg-pr1">{{ pad[1]|datetime }}</code>
       <code class="w50 lg-w20 pr1">revisions: {{ pad[2] }}</code>
       <code class="w50 p0-15 lg-w15">authors: {{ pad[3] }}</code>

@@ -76,9 +76,9 @@ class App(object):
             pads = get_from_db.get_data(connection)
             pads = sorted(pads, key=itemgetter(1), reverse=True)
 
-            ep_port = os.getenv('EP_PORT')
+            ep_url = os.getenv('EP_URL')
 
-            return self.render_template('index.html', pads=pads, ep_port=ep_port)
+            return self.render_template('index.html', pads=pads, ep_url=ep_url)
 
     def error_404(self):
         response = self.render_template('404.html')

@@ -21,7 +21,7 @@ afterwards, install all the packages listed in the `Pipfile`.
 
 ### create .env
 
-to store db credentials and etherpad’s url / port number, we use a `.env`.
+to store db credentials and etherpad’s base url to redirect pads to, we use a `.env`.
 
 ```
 # from the root project folder, eg /path/to/ether-index-sql/.
@@ -36,7 +36,7 @@ DB_HOST=localhost
 DB_USER=sql-username
 DB_PASSWORD=some-pa$$word
 DB_NAME=etherpad_lite_db
-EP_PORT=9001
+EP_LINK=https//...
 ```
 
 ### run the app
