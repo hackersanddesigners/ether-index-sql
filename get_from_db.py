@@ -6,7 +6,7 @@ def get_data(connection):
   try:
     with connection.cursor() as cursor:
         # doing some pad.key trimming here, rather than below in the code.
-        # just bc of <https://github.com/ether/etherpad-lite/wiki/How-to-list-all-pads>
+        # <https://github.com/ether/etherpad-lite/wiki/How-to-list-all-pads>
         sql_pads = "SELECT DISTINCT SUBSTRING(store.key,5) AS 'key', store.value FROM store WHERE store.key LIKE 'pad:%'"
         cursor.execute(sql_pads)
         pads = cursor.fetchall()
