@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>ether.index</title>
+  <meta name="description" content="ether.index">
+  <meta name="author" content="h&d">
+
+  <style>
+   html { box-sizing: border-box }
+   *, *:before, *:after { box-sizing: inherit }
+   html, body, h1, h2, h3, h4, h5, h6, p, ol, ul, li { font-size: 18px; margin: 0; padding: 0 }
+   code { font-size: 0.8rem }
+   a:hover { background-color: #fffd95 }
+   .x { display: flex }
+   .xdr { flex-direction: row }
+   .xw { flex-wrap: wrap }
+   .xjb { justify-content: space-between }
+   .pr0-5 { padding-right: 0.5rem }
+   .p1 { padding: 1rem }
+   .pr1 { padding-right: 1rem }
+   .pl1 { padding-left: 1rem }
+   .pb1 { padding-bottom: 1rem }
+   .w50 { width: 50% }
+   .w100 { width: 100% }
+   @media screen and (min-width: 400px) {
+     .md-pr1 { padding-right: 1rem }
+     .md-w50 { width: 50% }
+   }
+   @media screen and (min-width: 700px) {
+     .lg-pb0 { padding-bottom: 0rem }
+     .lg-pr1 { padding-right: 1rem }
+     .lg-w15 { width: 15% }
+     .lg-w20 { width: 20% }
+     .lg-w25 { width: 25% }
+     .lg-w35 { width: 35% }
+   }
+  </style>
+</head>
+
+<body>
+  <header class="p1 x md-xdr">
+    <h1 class="pr0-5">ether-index</h1>
+    <p>there are {{ pads | length }} pads.</p>
+  </header>
+  <main>
+    {% for pad in pads %}
+    <div class="x xdr xw xjb pl1 pr1 pb1 lg-pb0">
+      <a href="http://localhost:{{ ep_port }}/p/{{ pad[0] }}" class="w100 md-w50 lg-w35 md-pr1">{{ pad[0] }}</a>
+      <code class="w100 md-w50 lg-w25 lg-pr1">{{ pad[1]|datetime }}</code>
+      <code class="w50 lg-w20 pr1">revisions: {{ pad[2] }}</code>
+      <code class="w50 p0-15 lg-w15">authors: {{ pad[3] }}</code>
+    </div>
+    {% endfor %}
+  </main>
+</body>
+</html>

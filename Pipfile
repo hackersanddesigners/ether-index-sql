@@ -8,6 +8,8 @@ verify_ssl = true
 [packages]
 pymysql = "*"
 python-dotenv = "*"
+werkzeug = "*"
+jinja2 = "*"
 
 [requires]
 python_version = "3.7"
