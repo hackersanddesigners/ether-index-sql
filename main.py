@@ -8,7 +8,7 @@ from werkzeug.routing import Map, Rule
 from jinja2 import Environment, FileSystemLoader
 import get_from_db
 from operator import itemgetter
-from datetime import datetime
+import datetime
 
 # -- load .env
 dotenv_path = join(dirname(__file__), '.env')
@@ -26,7 +26,11 @@ class App(object):
             ts = timestamp / 1000
 
             # <https://stackoverflow.com/a/37188257>
-            ts = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%dT%H:%M:%S')
+            ts = datetime.datetime.utcfromtimestamp(ts)
+
+            # <https://stackoverflow.com/a/46339491>
+            ts = ts.replace(tzinfo=datetime.timezone.utc)
+            ts = ts.astimezone()
 
             return ts
 
