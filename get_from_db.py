@@ -5,42 +5,48 @@ import json
 def get_data(connection):
   try:
     with connection.cursor() as cursor:
-        # doing some pad.key trimming here, rather than below in the code.
         # <https://github.com/ether/etherpad-lite/wiki/How-to-list-all-pads>
-        sql_pads = "SELECT DISTINCT SUBSTRING(store.key,5) AS 'key', store.value FROM store WHERE store.key LIKE 'pad:%'"
+        sql_pads = "SELECT DISTINCT store.key, store.value FROM store WHERE store.key LIKE 'pad:%'"
+
         cursor.execute(sql_pads)
         pads = cursor.fetchall()
 
-        # from store.values get:
-        # - pad's number of revisions
-        # - pad's latest timestamp
-        # - pad's number of authors
-
-        # set unique keys in dictonary for each pad
-        pad_index = {}
+        pad_list = {}
         for pad in pads:
-            pad_v = json.loads(pad['value'])
+          try:
+            # fetch text and authors num from key == `pad:<title>`
+            # fetch revisions num and latest timestamp from `pad:<title>:revs:<num>`
 
-            # -- set keys
-            if ':revs:' not in pad['key']:
-                try:
-                    padk = pad['key']
-                    pad_index[padk] = {'title': padk,
-                                       'timestamp': 0,
-                                       'revisions': 0,
-                                       'authors': 0}
-                except Exception as e:
-                    print('pad-revs err =>', pad, e)
+            pad_key_split = pad['key'].split(':')
 
-                for item in pad_v['pool']['numToAttrib'].values():
-                    if item[0] == 'author':
-                        pad_index[padk]['authors'] += 1
-            else:
-                pad_index[padk]['timestamp'] = pad_v['meta']['timestamp']
-                pad_index[padk]['revisions'] += 1
+            if len(pad_key_split) == 2:
+              pad_item = {'title': '',
+                          'text': '',
+                          'timestamp': 0,
+                          'revisions': 0,
+                          'authors': 0}
+
+              pad_item['title'] = pad_key_split[1]
+
+              pad_value = json.loads(pad['value'])
+              pad_item['text'] = pad_value['atext']['text']
+
+              for item in pad_value['pool']['numToAttrib'].values():
+                if item[0] == 'author':
+                  pad_item['authors'] += 1
+
+              pad_list[pad_key_split[1]] = pad_item
+
+            elif pad_key_split[2] == 'revs':
+              pad_list[pad_key_split[1]]['revisions'] += 1
+              pad_value = json.loads(pad['value'])
+              if (int(pad_key_split[3]) == int(pad_list[pad_key_split[1]]['revisions']) - 1):
+                pad_list[pad_key_split[1]]['timestamp'] = pad_value['meta']['timestamp']
+          except Exception as e:
+            print('parse pad err =>', e)
 
         # -- convert dict to tuple, so it's sortable and more flat
-        padidx = [(v['title'], v['timestamp'], v['revisions'], v['authors']) for k, v in pad_index.items()]
+        padidx = [(v['title'], v['timestamp'], v['revisions'], v['authors']) for k, v in pad_list.items()]
 
         return padidx
 
