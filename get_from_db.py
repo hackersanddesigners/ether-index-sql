@@ -27,31 +27,28 @@ def get_data(connection, filter_word):
             pad_value = json.loads(cursor.fetchone()['value'])
             pad_text = pad_value['atext']['text']
 
-            print(pad_text.split('\n')[0], '\n')
-
             if (pad_text.split('\n')[0] != filter_word):
-              pad_item = {'title': '',
-                          'timestamp': 0,
-                          'revisions': 0,
-                          'authors': 0}
-
               # -- title
-              pad_item['title'] = pad['key']
+              pad_title = pad['key']
 
               # -- revision num
-              pad_item['revisions'] = pad_value['head']
+              pad_revisions = pad_value['head']
 
               # -- author num
+              pad_authors = 0
               for item in pad_value['pool']['numToAttrib'].values():
                 if item[0] == 'author':
-                  pad_item['authors'] += 1
+                  pad_authors += 1
 
               # -- timestamp
               sql_pad_rev = "SELECT DISTINCT store.value FROM store WHERE store.key = %s"
               cursor.execute(sql_pad_rev, ('pad:' + pad['key'] + ':revs:' + str(pad_value['head']),))
 
               ts = json.loads(cursor.fetchone()['value'])['meta']['timestamp']
-              pad_item['timestamp'] = ts
+              pad_timestamp = ts
+
+              # make tuple out of pad keys
+              pad_item = (pad_title, pad_timestamp, pad_revisions, pad_authors)
 
               # -- add to list
               pad_list.append(pad_item)
@@ -59,9 +56,7 @@ def get_data(connection, filter_word):
           except Exception as e:
             print('parse pad err =>', e)
 
-        # -- convert list of dictionaries to list of tuples, so it's sortable and more flat
-        pad_index = [(pad['title'], pad['timestamp'], pad['revisions'], pad['authors']) for pad in pad_list]
-        return pad_index
+        return pad_list
 
   except Exception as e:
     print('db err =>', e)
