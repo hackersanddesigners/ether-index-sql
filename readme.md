@@ -40,6 +40,8 @@ EP_LINK=https//...
 FILTER=__NOINDEX__
 ```
 
+`FILTER` takes a string to use for filtering out pads: the basic rule is to put this special word on the first line of the pad, and this will tell the app to not display that pad on the final index page.
+
 ### run the app
 
 ```
