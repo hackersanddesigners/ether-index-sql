@@ -2,7 +2,7 @@ import json
 
 
 # -- get data from db
-def get_data(connection):
+def get_data(connection, filter_word):
   try:
     with connection.cursor() as cursor:
         # due to the way etherpad uses sql (eg, by dumping in in table with two columns all data, simply mapping the k,v json structure to sql)
@@ -24,34 +24,37 @@ def get_data(connection):
             sql_pad_value = "SELECT DISTINCT store.value FROM store WHERE store.key = %s"
             cursor.execute(sql_pad_value, ('pad:' + pad['key'],))
 
-            pad_item = {'title': '',
-                        'timestamp': 0,
-                        'revisions': 0,
-                        'authors': 0}
+            pad_value = json.loads(cursor.fetchone()['value'])
+            pad_text = pad_value['atext']['text']
 
-            # -- title
-            pad_item['title'] = pad['key']
+            print(pad_text.split('\n')[0], '\n')
 
-            t = cursor.fetchone()
-            pad_value = json.loads(t['value'])
+            if (pad_text.split('\n')[0] != filter_word):
+              pad_item = {'title': '',
+                          'timestamp': 0,
+                          'revisions': 0,
+                          'authors': 0}
 
-            # -- revision num
-            pad_item['revisions'] = pad_value['head']
+              # -- title
+              pad_item['title'] = pad['key']
 
-            # -- author num
-            for item in pad_value['pool']['numToAttrib'].values():
-              if item[0] == 'author':
-                pad_item['authors'] += 1
+              # -- revision num
+              pad_item['revisions'] = pad_value['head']
 
-            # -- timestamp
-            sql_pad_rev = "SELECT DISTINCT store.value FROM store WHERE store.key = %s"
-            cursor.execute(sql_pad_rev, ('pad:' + pad['key'] + ':revs:' + str(pad_value['head']),))
+              # -- author num
+              for item in pad_value['pool']['numToAttrib'].values():
+                if item[0] == 'author':
+                  pad_item['authors'] += 1
 
-            ts = json.loads(cursor.fetchone()['value'])['meta']['timestamp']
-            pad_item['timestamp'] = ts
+              # -- timestamp
+              sql_pad_rev = "SELECT DISTINCT store.value FROM store WHERE store.key = %s"
+              cursor.execute(sql_pad_rev, ('pad:' + pad['key'] + ':revs:' + str(pad_value['head']),))
 
-            # -- add to list
-            pad_list.append(pad_item)
+              ts = json.loads(cursor.fetchone()['value'])['meta']['timestamp']
+              pad_item['timestamp'] = ts
+
+              # -- add to list
+              pad_list.append(pad_item)
 
           except Exception as e:
             print('parse pad err =>', e)
@@ -61,7 +64,7 @@ def get_data(connection):
         return pad_index
 
   except Exception as e:
-      print('db err =>', e)
+    print('db err =>', e)
 
   finally:
-      cursor.close()
+    cursor.close()

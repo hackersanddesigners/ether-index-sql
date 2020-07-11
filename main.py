@@ -77,7 +77,7 @@ class App(object):
                                          cursorclass=pymysql.cursors.DictCursor)
 
             # get all pads and sort them by timestamp
-            pads = get_from_db.get_data(connection)
+            pads = get_from_db.get_data(connection, os.getenv('FILTER'))
             pads = sorted(pads, key=itemgetter(1), reverse=True)
 
             ep_url = os.getenv('EP_URL')
