@@ -66,8 +66,8 @@ given this, a way to get good performance (eg page load-time), is the following:
 
 i’m a SQL noob, so probably it’s possible to combine more queries into one for this use case, but as a prototype this works fine.
 
-[1] to get author numbers, we loop over a field called ‘numToAttrib‘ that contains a bunch of keys, including authors; we take these and sum them up
-[2] by simply trying to understand the pad json data-structure, turned out that the `head` field is a reference to the number of pad’s revisions, which we can use to construct the store.key value to the correct SQL row of that revision
+[1]: to get author numbers, we loop over a field called ‘numToAttrib‘ that contains a bunch of keys, including authors; we take these and sum them up
+[2]: by simply trying to understand the pad json data-structure, turned out that the `head` field is a reference to the number of pad’s revisions, which we can use to construct the store.key value to the correct SQL row of that revision
 
 ## todos / ideas
 
