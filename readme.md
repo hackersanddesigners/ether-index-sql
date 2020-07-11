@@ -3,6 +3,8 @@ ether-index-sql
 
 a python plugin for [etherpad-lite](https://github.com/ether/etherpad-lite/wiki/How-to-list-all-pads), that reads from the SQL database etherpad-lite is running from, and make a one-page index list of all the pads, plus some useful details for each.
 
+[ether-index-sql frontpage](./ether-index.png)
+
 ## usage
 
 ### clone the repo
