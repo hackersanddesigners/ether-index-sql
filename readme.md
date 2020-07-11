@@ -37,6 +37,7 @@ DB_USER=sql-username
 DB_PASSWORD=some-pa$$word
 DB_NAME=etherpad_lite_db
 EP_LINK=https//...
+FILTER=__NOINDEX__
 ```
 
 ### run the app
@@ -55,12 +56,23 @@ this starts the server, default port is `localhost:5005`.
 select distinct substring(store.key,5,locate(":",store.key,5)-5) as "pads" from store where store.key like "pad:%";
 ```
 
-using a slightly simpler version of this, as the `pad.value` is a json string like `pad.key`, but more complex. easier to work that out in python.
+due to etherpad-lite’s useless way to use SQL — they are dumping the whole json database into one table with two columns (`store.key`, `store.value`), querying from SQL is far from easy and efficient. a row can be either the actual pad, or a revision entry for a specific pad.
+
+given this, a way to get good performance (eg page load-time), is the following:
+
+- fetch all pad titles 
+- loop over them and fetch correct SQL row with pad content; get number of authors [^1] and revisions value [^2]
+- use the revision value to build another query that matches the store.key of that pad latest revisions, to get the timestamp value
+
+i’m a SQL noob, so probably it’s possible to combine more queries into one for this use case, but as a prototype this works fine.
+
+[^1]: to get author numbers, we loop over a field called ‘numToAttrib‘ that contains a bunch of keys, including authors; we take these and sum them up
+[^2]: by simply trying to understand the pad json data-structure, turned out that the `head` field is a reference to the number of pad’s revisions, which we can use to construct the store.key value to the correct SQL row of that revision
 
 ## todos / ideas
 
-- [ ] paging results for faster loading time (eg show last 20 edited pads, then click to load more?)
 - [ ] add search function
 - [ ] add sort-by each key (title, timestamp, revisions number, authors number) (now it’s sorted by most recent edited pad)
-- [ ] grab author’s color hex value, and build a gradient out of them all?
+- [ ] add paging to result? possible but to get result in chronological order we need to query the whole database anyway
 
+it would be nice to build a database mapper / adapter from the json data-structure to a meaningful SQL structure. so query would be way more efficient, the app code would do less, etc.
