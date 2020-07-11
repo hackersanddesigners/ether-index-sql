@@ -30,7 +30,7 @@ class App(object):
 
             # <https://stackoverflow.com/a/46339491>
             ts = ts.replace(tzinfo=datetime.timezone.utc)
-            ts = ts.astimezone()
+            ts = ts.astimezone().strftime('%Y-%m-%d %H:%M:%S')
 
             return ts
 
