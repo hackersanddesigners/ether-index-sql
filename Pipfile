@@ -10,6 +10,7 @@ pymysql = "*"
 python-dotenv = "*"
 werkzeug = "*"
 jinja2 = "*"
+python-slugify = "*"
 
 [requires]
 python_version = "3.7"

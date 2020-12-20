@@ -9,6 +9,7 @@ from jinja2 import Environment, FileSystemLoader
 import get_from_db
 from operator import itemgetter
 import datetime
+from slugify import slugify
 
 # -- load .env
 dotenv_path = join(dirname(__file__), '.env')
