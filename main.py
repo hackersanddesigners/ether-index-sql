@@ -2,6 +2,7 @@ import os
 from os.path import join, dirname
 from dotenv import load_dotenv
 import pymysql.cursors
+from werkzeug.utils import escape, redirect
 from werkzeug.wrappers import Request, Response
 from werkzeug.exceptions import HTTPException, NotFound
 from werkzeug.routing import Map, Rule
@@ -84,6 +85,15 @@ class App(object):
             ep_url = os.getenv('EP_URL')
 
             return self.render_template('index.html', pads=pads, ep_url=ep_url)
+
+        elif request.method == 'POST':
+            if (request.form['padname'] is not None):
+                padname = slugify(escape(request.form['padname']))
+
+                ep_url = os.getenv('EP_URL')
+
+                # redirect website to external page
+                return redirect(ep_url + '/p/' + padname)
 
     def error_404(self):
         response = self.render_template('404.html')
