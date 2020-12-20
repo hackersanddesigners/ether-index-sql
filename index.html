@@ -12,21 +12,44 @@
   <style>
    html { box-sizing: border-box }
    *, *:before, *:after { box-sizing: inherit }
-   html, body, h1, h2, h3, h4, h5, h6, p, ol, ul, li { font-size: 18px; margin: 0; padding: 0 }
+   html, body, 
+   h1, h2, h3, h4, h5, h6, 
+   p, 
+   ol, ul, li {
+     font-size: 18px;
+     margin: 0;
+     padding: 0
+   }
    code { font-size: 0.8rem }
+   input {
+     font-family: 'serif';
+     font-size: inherit;
+     margin: 0;
+     padding: 0;
+   }
    a { word-wrap: break-word }
-   .bgc-hv:hover { background-color: #fffd95 }
+   .tac { text-align: center }
+   .bgc-light-gray { background-color: #f9f9f9 }
+   .bgc-yellow-hv:hover { background-color: #fffd95 }
    .x { display: flex }
    .xdr { flex-direction: row }
    .xw { flex-wrap: wrap }
    .xjb { justify-content: space-between }
+   .aib { align-items: baseline }
    .pr0-5 { padding-right: 0.5rem }
+   .m1 { margin: 1rem }
    .p1 { padding: 1rem }
    .pr1 { padding-right: 1rem }
    .pl1 { padding-left: 1rem }
    .pb1 { padding-bottom: 1rem }
    .w50 { width: 50% }
    .w100 { width: 100% }
+   .pst { 
+     position: -webkit-sticky;
+     position: sticky;
+     top: -1px
+   }
+   .curp { cursor: pointer }
    @media screen and (min-width: 400px) {
      .md-pr1 { padding-right: 1rem }
      .md-w50 { width: 50% }
@@ -43,13 +66,26 @@
 </head>
 
 <body>
-  <header class="p1 x md-xdr">
-    <h1 class="pr0-5">ether-index</h1>
-    <p>there are {{ pads | length }} pads.</p>
-  </header>
+  <header class="bgc-light-gray pst p1 x md-xdr xjb aib">
+    <div class="x xdr">
+      <h1 class="pr0-5">ether-index</h1>
+      <p class="pr1">there are {{ pads | length }} pads.</p>
+    </div>
+
+    <form action="/" method="POST">
+      <label for="padname">make new pad</label>
+      <input type="text" id="padname" name="padname" value="" placeholder="type something...">
+      <input type="submit" value="create">
+    </form>
+  </header> 
   <main>
+    <details class="m1 curp">
+      <summary class="pb1">how does it work?</summary>
+      <p>this webpage lists all public pads from <a href="{{ ep_url}}">{{ ep_url }}</a>.</>
+      <p class="pb1">a pad is considered <em>public</em> by default; to not list it, put <code>__NOINDEX__</code> on the first line of the pad.</p>
+    </details>
     {% for pad in pads %}
-    <div class="x xdr xw xjb pl1 pr1 pb1 lg-py0-15 bgc-hv">
+    <div class="x xdr xw xjb pl1 pr1 pb1 lg-py0-15 bgc-yellow-hv">
       <a href="{{ ep_url }}/p/{{ pad[0] }}" class="w100 md-w50 lg-w35 md-pr1">{{ pad[0] }}</a>
       <code class="w100 md-w50 lg-w25 lg-pr1">{{ pad[1]|datetime }}</code>
       <code class="w50 lg-w20 pr1">revisions: {{ pad[2] }}</code>
@@ -57,5 +93,6 @@
     </div>
     {% endfor %}
   </main>
+  <footer class="p1 tac">.</footer>
 </body>
 </html>
